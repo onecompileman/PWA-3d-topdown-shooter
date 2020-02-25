@@ -115,12 +115,21 @@ export class MenuPage extends HTMLElement {
       this.onPlayCallback()
     );
 
-    this.querySelector('#howToPlay').addEventListener('click', () => {});
+    this.querySelector('#howToPlay').addEventListener('click', () =>
+      this.howToPlayCallback()
+    );
   }
 
-  howToPlayCallback() {}
+  howToPlayCallback() {
+    /*html*/
+    Swal.fire({
+      html: `<img src="/assets/images/how-to-play.jpg" style="width: 80%; max-height: 80%;">`,
+      width: '100%'
+    });
+  }
 
   showAbout() {
+    /*html*/
     Swal.fire({
       html: `
         <h2>About the game</h2>
@@ -135,6 +144,7 @@ export class MenuPage extends HTMLElement {
 
   updateDOM() {
     const appVersion = `v0.5`;
+    /*html*/
     this.innerHTML = `
         ${componentStyles}
         <div class="game-menu">

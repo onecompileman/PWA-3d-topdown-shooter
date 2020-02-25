@@ -1,10 +1,10 @@
-import * as Three from 'three';
+import { AudioListener, AudioLoader, Audio } from 'three';
 import { Sounds } from './data/sounds';
 
 export class AudioManager {
   constructor() {
-    this.loader = new Three.AudioLoader();
-    this.listener = new Three.AudioListener();
+    this.loader = new AudioLoader();
+    this.listener = new AudioListener();
   }
 
   addListenerToCamera(camera) {
@@ -19,7 +19,7 @@ export class AudioManager {
     const path = 'assets/sounds/';
     for (let audioName of audioNames) {
       const soundBuffer = await this.loadAudio(path + Sounds[audioName]);
-      const audio = new Three.Audio(this.listener);
+      const audio = new Audio(this.listener);
       audio.setBuffer(soundBuffer);
       this.audios[audioName] = audio;
       appLoader.assetsLoaded++;

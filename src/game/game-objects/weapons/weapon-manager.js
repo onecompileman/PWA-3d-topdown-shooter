@@ -1,6 +1,5 @@
 import { WeaponType } from '../../enums/weapon-type';
 import { Rifle } from './rifle';
-import * as Three from 'three';
 
 export class WeaponManager {
   constructor(scene) {

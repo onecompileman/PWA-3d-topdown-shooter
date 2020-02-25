@@ -1,6 +1,12 @@
-import * as Three from 'three';
+import {
+  Box3,
+  Vector3,
+  Vector2,
+  AnimationMixer,
+  AnimationClip,
+  Group
+} from 'three';
 import { detectMobile } from '../utils/mobile-detect';
-import { cloneGltf } from '../utils/clone-gltf';
 
 export class Player {
   constructor(object, animations, weaponManager) {
@@ -10,17 +16,17 @@ export class Player {
       track => !track.name.includes('ArmR')
     );
     this.weaponManager = weaponManager;
-    this.mixer = new Three.AnimationMixer(object);
-    this.velocity = new Three.Vector3();
+    this.mixer = new AnimationMixer(object);
+    this.velocity = new Vector3();
     this.getPlayerRightArm();
     this.initObject();
-    this.bBox = new Three.Box3().setFromObject(this.object);
-    this.size = new Three.Vector3();
+    this.bBox = new Box3().setFromObject(this.object);
+    this.size = new Vector3();
     this.bBox.getSize(this.size);
     this.state = 'idle';
     this.oldState = 'idle';
     this.action = null;
-    this.mousePoint = new Three.Vector2();
+    this.mousePoint = new Vector2();
     this.isFiring = false;
     this.weapon = null;
     this.speed = 0.035;
@@ -36,7 +42,6 @@ export class Player {
 
   getPlayerRightArm() {
     this.playerRightArm = this.object.children[0].children[1].children[0].skeleton.bones[14];
-    // this.playerRightArm.position.add(new Three.Vector3(1, 0, 0));
   }
 
   initObject() {
@@ -51,11 +56,11 @@ export class Player {
   }
 
   initFireAnimation() {
-    const clipFire = Three.AnimationClip.findByName(
+    const clipFire = AnimationClip.findByName(
       this.clips,
       'CharacterArmature|Shoot_OneHanded'
     );
-    const clipPunch = Three.AnimationClip.findByName(
+    const clipPunch = AnimationClip.findByName(
       this.clips,
       'CharacterArmature|Punch'
     );
@@ -91,7 +96,7 @@ export class Player {
       }
     }
 
-    this.mousePoint = new Three.Vector2(intersectPoint.x, intersectPoint.z);
+    this.mousePoint = new Vector2(intersectPoint.x, intersectPoint.z);
 
     // this.updateWeapon();
     if (this.fireAction.isRunning()) {
@@ -114,7 +119,7 @@ export class Player {
     this.object.position.copy(this.worldObj.getPosition());
     this.worldObj.rotation.y = this.object.rotation.y;
     this.object.position.y += this.object.position.y * 0.05;
-    this.bBox = new Three.Box3().setFromObject(this.object);
+    this.bBox = new Box3().setFromObject(this.object);
   }
 
   updateWeapon() {
@@ -124,22 +129,16 @@ export class Player {
   }
 
   fire() {
-    const player2dPosition = new Three.Vector2(
+    const player2dPosition = new Vector2(
       this.object.position.x,
       this.object.position.z
     );
     const desired2dVelocity = player2dPosition.sub(this.mousePoint.clone());
-    const velocity = new Three.Vector3(
-      desired2dVelocity.x,
-      0,
-      desired2dVelocity.y
-    );
+    const velocity = new Vector3(desired2dVelocity.x, 0, desired2dVelocity.y);
 
-    const mobileFireVelocity3 = new Three.Vector3(
-      this.mobileFireVelocity.x,
-      0,
-      this.mobileFireVelocity.y
-    );
+    const mobileFireVelocity3 = this.mobileFireVelocity
+      ? new Vector3(this.mobileFireVelocity.x, 0, this.mobileFireVelocity.y)
+      : new Vector3();
     mobileFireVelocity3.multiplyScalar(-1);
     const bullet = this.weapon.fire(
       this.object.position.clone(),
@@ -201,7 +200,7 @@ export class Player {
       const { object, type, damage } = this.weaponForPickup;
       this.onWeaponPickUpListener(object);
       this.weapon = this.weaponManager.createWeapon(object, type, damage);
-      this.pivot = new Three.Group();
+      this.pivot = new Group();
       this.pivot.position.set(0.0, 0.0, 0);
       this.playerRightArm.add(this.pivot);
       this.weapon.object.position.set(0, 0, 0);
@@ -228,7 +227,7 @@ export class Player {
   }
 
   setVelocity(velocity) {
-    this.velocity = new Three.Vector3(velocity.x, 0, velocity.y);
+    this.velocity = new Vector3(velocity.x, 0, velocity.y);
     if (this.velocity.length() > 0) {
       this.state = 'walk';
     } else {
@@ -248,7 +247,7 @@ export class Player {
 
   computeRotation() {
     if (this.isFiring) {
-      const player2dPosition = new Three.Vector2(
+      const player2dPosition = new Vector2(
         this.object.position.x,
         this.object.position.z
       );
@@ -282,7 +281,7 @@ export class Player {
     if (this.action) {
       this.action.stop();
     }
-    const clip = Three.AnimationClip.findByName(this.clips, name);
+    const clip = AnimationClip.findByName(this.clips, name);
     this.action = this.mixer.clipAction(clip);
     this.action.play();
   }

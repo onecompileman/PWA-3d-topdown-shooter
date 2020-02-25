@@ -1,4 +1,4 @@
-import * as Three from 'three';
+import { Vector3, Box3 } from 'three';
 
 export class WeaponPickUp {
   constructor(object, type, damage) {
@@ -6,8 +6,8 @@ export class WeaponPickUp {
     this.type = type;
     this.damage = damage;
     this.object.scale.set(0.1, 0.1, 0.1);
-    this.size = new Three.Vector3();
-    new Three.Box3().setFromObject(this.object).getSize(this.size);
+    this.size = new Vector3();
+    new Box3().setFromObject(this.object).getSize(this.size);
   }
 
   update(deltaTime) {

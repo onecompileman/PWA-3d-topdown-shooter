@@ -1,4 +1,17 @@
-import * as Three from 'three';
+import {
+  Vector3,
+  Raycaster,
+  Vector2,
+  Box3,
+  Scene,
+  AmbientLight,
+  PointLight,
+  DirectionalLight,
+  WebGLRenderer,
+  Clock,
+  PerspectiveCamera,
+  sRGBEncoding
+} from 'three';
 import { ModelManager } from './model-manager';
 import * as Oimo from 'oimo';
 import Swal from 'sweetalert2';
@@ -6,7 +19,6 @@ import { findIndex } from 'lodash';
 import { Player } from './game-objects/player';
 import { Platform } from './game-objects/platform';
 import { Prop } from './game-objects/prop';
-import { Vector3 } from 'three';
 import { WeaponPickUp } from './game-objects/weapon-pick-up';
 import { WeaponManager } from './game-objects/weapons/weapon-manager';
 import { Enemy } from './game-objects/weapons/enemy';
@@ -136,7 +148,7 @@ export class GameManager {
     const { scene, animations } = this.modelManager.enemies[0];
     let enemy;
     do {
-      const enemyPosition = new Three.Vector3(
+      const enemyPosition = new Vector3(
         this.getRandomInt(-13, 13),
         -5,
         this.getRandomInt(-13, 13)
@@ -164,9 +176,9 @@ export class GameManager {
   }
 
   initRaycaster() {
-    this.raycaster = new Three.Raycaster();
-    this.mouse = new Three.Vector2();
-    this.intersectPoint = new Three.Vector3();
+    this.raycaster = new Raycaster();
+    this.mouse = new Vector2();
+    this.intersectPoint = new Vector3();
 
     addEventListener('mousemove', event => {
       this.mouse.x = (event.clientX / innerWidth) * 2 - 1;
@@ -174,19 +186,19 @@ export class GameManager {
       // console.log(this.mouse);
       this.raycaster.setFromCamera(this.mouse, this.camera);
       this.raycaster.ray.intersectBox(
-        new Three.Box3().setFromObject(this.platform.object),
+        new Box3().setFromObject(this.platform.object),
         this.intersectPoint
       );
     });
   }
 
   initScene() {
-    this.clock = new Three.Clock();
-    this.scene = new Three.Scene();
+    this.clock = new Clock();
+    this.scene = new Scene();
   }
 
   initCamera() {
-    this.camera = new Three.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       75,
       innerWidth / innerHeight,
       0.1,
@@ -270,8 +282,8 @@ export class GameManager {
   }
 
   initLights() {
-    this.ambientLight = new Three.AmbientLight(0xffffff, 0.1);
-    this.directionalLight = new Three.DirectionalLight(0xffffff, 0.1);
+    this.ambientLight = new AmbientLight(0xffffff, 0.1);
+    this.directionalLight = new DirectionalLight(0xffffff, 0.1);
     this.directionalLight.castShadow = true;
 
     this.scene.add(this.ambientLight);
@@ -280,9 +292,9 @@ export class GameManager {
 
   initRenderer() {
     const canvas = document.querySelector('#mainCanvas');
-    this.renderer = new Three.WebGLRenderer({ canvas });
+    this.renderer = new WebGLRenderer({ canvas });
     this.renderer.setClearColor(0x404040);
-    this.renderer.outputEncoding = Three.sRGBEncoding;
+    this.renderer.outputEncoding = sRGBEncoding;
     this.renderer.setSize(innerWidth, innerHeight);
     this.renderer.gammaOutput = true;
     this.renderer.gammaFactor = 2.2;
@@ -388,7 +400,7 @@ export class GameManager {
   initPointLights() {
     for (let i = 0; i < 15; i++) {
       const lightColor = this.getRandomItem([0x52c5ee, 0xa300ff]);
-      const light = new Three.PointLight(lightColor, 1, 5);
+      const light = new PointLight(lightColor, 1, 5);
       light.position.set(
         this.getRand(-13, 13, 2),
         -5,
@@ -425,7 +437,7 @@ export class GameManager {
           : this.buildings.some(b => {
               const o = b.object.clone();
               o.scale.set(1.2, 1.2, 1.2);
-              const box = new Three.Box3().setFromObject(o);
+              const box = new Box3().setFromObject(o);
               return box.intersectsBox(building.bBox);
             });
       } while (collides);

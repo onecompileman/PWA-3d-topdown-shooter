@@ -1,4 +1,4 @@
-import * as Three from 'three';
+import { Box3, Vector3 } from 'three';
 
 export class Prop {
   constructor(object, position) {
@@ -8,8 +8,8 @@ export class Prop {
     this.object.position.copy(position);
     this.object.scale.set(0.7, 0.7, 0.7);
     this.object.position.y = -5.5;
-    this.bBox = new Three.Box3().setFromObject(this.object);
-    this.size = new Three.Vector3();
+    this.bBox = new Box3().setFromObject(this.object);
+    this.size = new Vector3();
     this.bBox.getSize(this.size);
   }
 
@@ -28,6 +28,6 @@ export class Prop {
   update(deltaTime) {
     this.object.position.copy(this.worldObj.getPosition());
     this.object.position.y += this.object.position.y * 0.05;
-    this.bBox = new Three.Box3().setFromObject(this.object);
+    this.bBox = new Box3().setFromObject(this.object);
   }
 }

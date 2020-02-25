@@ -1,4 +1,4 @@
-import * as Three from 'three';
+import { Skeleton } from 'three';
 
 export function cloneGltf(gltf) {
   const clone = {
@@ -39,7 +39,7 @@ export function cloneGltf(gltf) {
     }
 
     cloneSkinnedMesh.bind(
-      new Three.Skeleton(orderedCloneBones, skeleton.boneInverses),
+      new Skeleton(orderedCloneBones, skeleton.boneInverses),
       cloneSkinnedMesh.matrixWorld
     );
   }

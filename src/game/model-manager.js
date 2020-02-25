@@ -1,5 +1,4 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import * as Three from 'three';
 import { Props } from './data/props';
 import { Weapons } from './data/weapons';
 

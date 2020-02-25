@@ -50,3 +50,11 @@ analog-control#right {
   bottom: 0px;
   z-index: 100000;
 }
+
+.swal2-actions {
+  margin: 0 !important;
+}
+
+.swal2-styled.swal2-confirm {
+  font-size: 14px;
+}

@@ -1,5 +1,4 @@
-import * as Hammer from 'hammerjs';
-import * as Three from 'three';
+import { Vector2 } from 'three';
 
 const componentStyle = `
     <style>
@@ -33,7 +32,7 @@ export class AnalogControl extends HTMLElement {
   constructor() {
     super();
     this.prop = {
-      velocity: new Three.Vector2(),
+      velocity: new Vector2(),
       angle: 0,
       dragStart: null
     };
@@ -85,7 +84,7 @@ export class AnalogControl extends HTMLElement {
       const yNew = distance * Math.sin(angle);
       thumb.style.transform = `translate3d(${xNew}px, ${yNew}px, 0px)`;
       this.prop.angle = angle;
-      this.prop.velocity = new Three.Vector2(xNew, yNew);
+      this.prop.velocity = new Vector2(xNew, yNew);
     }
   }
 
@@ -94,7 +93,7 @@ export class AnalogControl extends HTMLElement {
       const thumb = this.querySelector('.analog-thumb');
       thumb.style.transform = `translate3d(0px, 0px, 0px)`;
       this.prop.dragStart = null;
-      this.prop.velocity = new Three.Vector2(0, 0);
+      this.prop.velocity = new Vector2(0, 0);
       this.prop.angle = 0;
     }
   }

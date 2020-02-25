@@ -1,4 +1,4 @@
-import * as Three from 'three';
+import { Vector3 } from 'three';
 import { RifleBullet } from './rifle-bullet';
 
 export class Rifle {
@@ -21,7 +21,7 @@ export class Rifle {
       setTimeout(() => {
         this.cooldown = true;
       }, this.speed);
-      const position = new Three.Vector3();
+      const position = new Vector3();
       this.object.getWorldPosition(position);
       return new RifleBullet(position, velocity);
     }

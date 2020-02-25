@@ -1,4 +1,15 @@
-import * as Three from 'three';
+import {
+  AnimationMixer,
+  AnimationClip,
+  Box3,
+  Vector3,
+  Vector2,
+  Mesh,
+  BoxGeometry,
+  MeshBasicMaterial,
+  Object3D,
+  LoopOnce
+} from 'three';
 import { cloneDeep } from 'lodash';
 import { cloneGltf } from '../../utils/clone-gltf';
 
@@ -16,15 +27,15 @@ export class Enemy {
     this.rangeToAttack = 5;
     this.speed = speed;
     this.attackCooldown = true;
-    this.velocity = new Three.Vector3();
-    this.bBox = new Three.Box3().setFromObject(this.object);
-    this.size = new Three.Vector3();
+    this.velocity = new Vector3();
+    this.bBox = new Box3().setFromObject(this.object);
+    this.size = new Vector3();
     this.bBox.getSize(this.size);
-    this.mixer = new Three.AnimationMixer(this.object);
+    this.mixer = new AnimationMixer(this.object);
     this.attackAction = this.mixer.clipAction(
-      Three.AnimationClip.findByName(this.clips, 'Attack')
+      AnimationClip.findByName(this.clips, 'Attack')
     );
-    this.attackAction.loop = Three.LoopOnce;
+    this.attackAction.loop = LoopOnce;
     this.playAnimation('Idle');
     this.initLife();
     this.oldState = 'Idle';
@@ -33,17 +44,17 @@ export class Enemy {
   }
 
   initLife() {
-    const geometry = new Three.BoxGeometry(this.size.x * 2.5, 0.1, 0.1);
-    const material = new Three.MeshBasicMaterial({ color: 0x55ff55 });
-    this.lifeMesh = new Three.Mesh(geometry, material);
-    this.lifeMeshContainer = new Three.Object3D();
+    const geometry = new BoxGeometry(this.size.x * 2.5, 0.1, 0.1);
+    const material = new MeshBasicMaterial({ color: 0x55ff55 });
+    this.lifeMesh = new Mesh(geometry, material);
+    this.lifeMeshContainer = new Object3D();
     this.lifeMeshContainer.add(this.lifeMesh);
     this.object.add(this.lifeMeshContainer);
     this.lifeMeshContainer.position.y += this.size.y * 5.2;
   }
 
   playAnimation(animationName) {
-    const clip = Three.AnimationClip.findByName(this.clips, animationName);
+    const clip = AnimationClip.findByName(this.clips, animationName);
     this.action = this.mixer.clipAction(clip);
     this.action.reset().play();
   }
@@ -56,7 +67,7 @@ export class Enemy {
     this.worldObj.rotation.y = this.object.rotation.y;
 
     this.object.position.y += this.object.position.y * 0.1;
-    this.bBox = new Three.Box3().setFromObject(this.object);
+    this.bBox = new Box3().setFromObject(this.object);
     if (this.oldState !== this.state) {
       this.oldState = this.state;
       this.playAnimation(this.state);
@@ -72,16 +83,16 @@ export class Enemy {
     if (
       player.position.distanceTo(this.object.position) <= this.rangeToAttack
     ) {
-      const playerPosition2d = new Three.Vector2(
+      const playerPosition2d = new Vector2(
         player.position.x,
         player.position.z
       );
-      const enemyPosition2d = new Three.Vector2(
+      const enemyPosition2d = new Vector2(
         this.object.position.x,
         this.object.position.z
       );
       const velocity2d = playerPosition2d.sub(enemyPosition2d);
-      this.velocity = new Three.Vector3(velocity2d.x, 0, velocity2d.y)
+      this.velocity = new Vector3(velocity2d.x, 0, velocity2d.y)
         .normalize()
         .multiplyScalar(this.speed);
       this.object.rotation.y = -(velocity2d.angle() + Math.PI * 3.5);

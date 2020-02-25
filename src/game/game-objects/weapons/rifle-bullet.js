@@ -1,15 +1,15 @@
-import * as Three from 'three';
+import { Mesh, MeshBasicMaterial, Box3, Vector3, BoxGeometry } from 'three';
 
 export class RifleBullet {
   constructor(position, velocity) {
-    const geometry = new Three.BoxGeometry(0.02, 0.02, 0.02);
-    const material = new Three.MeshBasicMaterial({
+    const geometry = new BoxGeometry(0.02, 0.02, 0.02);
+    const material = new MeshBasicMaterial({
       color: 0xfde366
     });
-    this.object = new Three.Mesh(geometry, material);
+    this.object = new Mesh(geometry, material);
     this.object.position.copy(position.clone());
-    this.bBox = new Three.Box3().setFromObject(this.object);
-    this.size = new Three.Vector3();
+    this.bBox = new Box3().setFromObject(this.object);
+    this.size = new Vector3();
     this.bBox.getSize(this.size);
     this.object.position.y += 0.18;
     this.speed = 0.4;
@@ -24,7 +24,7 @@ export class RifleBullet {
 
   update(deltaTime) {
     this.object.position.add(this.velocity.clone().multiplyScalar(deltaTime));
-    this.bBox = new Three.Box3().setFromObject(this.object);
+    this.bBox = new Box3().setFromObject(this.object);
 
     this.travelled += this.speed;
     if (this.travelled >= this.maxTravelled) {
