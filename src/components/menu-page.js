@@ -2,9 +2,24 @@ import Swal from 'sweetalert2';
 
 const componentStyles = `
     <style>
-         @font-face {
-            font-family: "Mage Hunter";
-            src: url("/assets/fonts/magehunter.ttf");"svg");
+        @font-face {
+          font-family: "Mage Hunter";
+          src: url("/assets/fonts/magehunter.ttf");"svg");
+        }
+
+        .landscape-please {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          font-family: Arial;
+          top: 0;
+          left: 0;
+          background-color: rgba(200,200,200, 0.9);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000000;
+          flex-direction: column;
         }
 
         .game-menu {
@@ -95,6 +110,7 @@ export class MenuPage extends HTMLElement {
       onPlayCallback: null
     };
     this.updateDOM();
+    this.checkOrientation();
     this.bindEvents();
   }
 
@@ -106,7 +122,18 @@ export class MenuPage extends HTMLElement {
     return this.prop.onPlayCallback;
   }
 
+  checkOrientation() {
+    if (innerHeight > innerWidth) {
+      this.querySelector('.landscape-please').style.display = 'flex';
+    } else {
+      this.querySelector('.landscape-please').style.display = 'none';
+    }
+  }
+
   bindEvents() {
+    addEventListener('resize', () => this.checkOrientation());
+    addEventListener('orientationchange', () => this.checkOrientation());
+
     this.querySelector('#about').addEventListener('click', () =>
       this.showAbout()
     );
@@ -147,6 +174,10 @@ export class MenuPage extends HTMLElement {
     /*html*/
     this.innerHTML = `
         ${componentStyles}
+        <div class="landscape-please">
+           <img src="/assets/images/tilt.png">
+           <p>For better experience, use landscape orientation</p>
+        </div>
         <div class="game-menu">
             <div class="menu-overlay"></div>
             <h1 class="game-text">

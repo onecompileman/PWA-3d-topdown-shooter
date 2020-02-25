@@ -18,9 +18,6 @@ module.exports = {
       }
     ]
   },
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html'
